@@ -38,6 +38,10 @@ class Board
   end
 
   def update(pos, player)
-    @cells[pos.to_i - 1] = player.token    
+    @cells[pos.to_i - 1] = player.token
+  end
+
+  def position_taken?(index)
+    !(@cells[index].nil? || @cells[index] == " ")
   end
 end
