@@ -8,10 +8,10 @@ class Game
     [1, 4, 7],
     [2, 5, 8],
     [0, 4, 8],
-    [6, 4, 2],s
+    [6, 4, 2],
   ]
 
-  def initialize(player_1 = Players::Human.new, player_2 = Players::Human.new, board = Board.new)
+  def initialize(player_1 = Players::Human.new("X"), player_2 = Players::Human.new("O"), board = Board.new)
     @player_1 = player_1
     @player_2 = player_2
     @board = board
@@ -32,7 +32,7 @@ class Game
     elsif WIN_COMBINATIONS.none? { |comb| include_array?(comb) }
       false
     else
-      WIN_COMBINATIONS.each { |comb| comb if self.include_array?(comb) }
+      WIN_COMBINATIONS.each { |comb| return comb if include_array?(comb) }
     end
   end
 
@@ -47,10 +47,9 @@ class Game
   def turn
     puts "Please enter 1-9:"
 
-    input = gets.strip
-    index = input_to_index(input)
+    pos = gets.strip
 
-    if valid_move?(index)
+    if @board.valid_move?(pos)
       move(index, current_player.token)
     else
       turn
@@ -76,11 +75,9 @@ class Game
   end
 
   def include_array?(comb)
-    @board.cells[comb[0]] == @board.cells[comb[1]] && @board.cells[comb[1]] == @board.cells[comb[2]]
-  end
-
-  def input_to_index(user_input)
-    user_input.to_i - 1
+    comb.all? { |x| @board.position_taken?(x) } &&
+    @board.cells[comb[0]] == @board.cells[comb[1]] &&
+    @board.cells[comb[1]] == @board.cells[comb[2]]
   end
 
   def move(index, current_player)
